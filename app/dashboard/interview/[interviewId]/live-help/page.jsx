@@ -9,7 +9,7 @@ import TabScreenShare from "@/app/dashboard/_components/TabScreenShare";
 import TranscribeText from "@/app/dashboard/_components/TranscribeText";
 import GenerateAnswer from "@/app/dashboard/_components/GenerateAnswer";
 import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
+import { LiveHelpInterview } from "@/utils/schema";
 
 function Interview({ params }) {
   const [interviewData, setInterviewData] = useState(null);
@@ -109,8 +109,8 @@ function Interview({ params }) {
     try {
       const result = await db
         .select()
-        .from(MockInterview)
-        .where(eq(MockInterview.mockId, params.interviewId));
+        .from(LiveHelpInterview)
+        .where(eq(LiveHelpInterview.mockId, params.interviewId));
 
       if (result.length > 0) {
         setInterviewData(result[0]);
@@ -122,10 +122,6 @@ function Interview({ params }) {
       console.error("Interview details fetch error:", error);
     }
   };
-
-  let numberOfQuestions = 5;
-  numberOfQuestions =
-    interviewData && JSON.parse(interviewData?.jsonMockResp).length;
 
   if (!interviewData) {
     return <div>Loading interview details...</div>;

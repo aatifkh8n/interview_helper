@@ -14,6 +14,18 @@ export const MockInterview = pgTable('mockInterview',{
     mockId:varchar('mockId').notNull()
 })
 
+export const LiveHelpInterview = pgTable('liveHelpInterview',{
+    id:serial('id').primaryKey(),
+    jobPosition:varchar('jobPosition').notNull(),
+    jobDesc:varchar('jobDesc').notNull(),
+    type: integer('type').default(0),
+    jobExperience:varchar('jobExperience').notNull(),
+    fileText:text('fileText').notNull(),
+    createdBy:varchar('createdBy').notNull(),
+    createdAt:varchar('createdAt'),
+    mockId:varchar('mockId').notNull()
+})
+
 export const UserAnswer = pgTable('userAnswer',{
     id:serial('id').primaryKey(),
     mockIdRef:varchar('mockId').notNull(),

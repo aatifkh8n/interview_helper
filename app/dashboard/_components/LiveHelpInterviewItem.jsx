@@ -8,7 +8,7 @@ import { Trash2, Play, BotMessageSquare, FileUp, MessageSquareText } from "lucid
 import { toast } from "sonner";
 import Link from "next/link";
 
-const InterviewItem = ({ interview, index }) => {
+const LiveHelpInterviewItem = ({ interview, index }) => {
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -53,27 +53,17 @@ const InterviewItem = ({ interview, index }) => {
       <td className="px-6 py-4">{interview?.jobExperience || "N/A"}</td>
       <td className="px-6 py-4">{interview?.createdAt}</td>
       <td className="px-6 py-4 text-center">
-        {interview.submitted ? (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={onFeedbackPress}
-            className="mr-2"
-            title="Feedback"
-          >
-            <MessageSquareText />
-          </Button>
-        ) : (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={onStart}
-            title="Start"
-            className="mr-2"
-          >
-            <Play />
-          </Button>
-        )}
+
+        <Button
+          size="sm"
+          variant="outline"
+          title="Live Help"
+          className="mr-2 text-indigo-600"
+        >
+          <Link href={`/dashboard/interview/${interview?.mockId}/live-help`}>
+            <BotMessageSquare />
+          </Link>
+        </Button>
 
         <Button
           size="sm"
@@ -109,4 +99,4 @@ const InterviewItem = ({ interview, index }) => {
   );
 };
 
-export default InterviewItem;
+export default LiveHelpInterviewItem;

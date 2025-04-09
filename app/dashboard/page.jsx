@@ -5,7 +5,6 @@ import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import {
   Bot,
-  Plus,
   ListChecks,
   Trophy,
   Zap,
@@ -15,14 +14,12 @@ import {
 import AddNewInterview from './_components/AddNewInterview'
 import InterviewList from './_components/InterviewList'
 import TechStackComponent from './_components/TechStack'
-import { Button } from '@/components/ui/button';
 // import  LgCard  from '@/components/ui/Card';
 
 function Dashboard() {
   const { user } = useUser();
   const [interviewData, setInterviewData] = useState([]);
   const [isNewInterviewModalOpen, setIsNewInterviewModalOpen] = useState(false);
-  const [isNewFileBasedInterviewModalOpen, setIsNewFileBasedInterviewModalOpen] = useState(false);
   const [statsCards, setStatsCards] = useState([
     {
       icon: <ListChecks size={32} className="text-indigo-600" />,
@@ -181,7 +178,8 @@ function Dashboard() {
      {/* Interview History */}
      <div className="mt-8">
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">
-          Recently Added Interviews 
+          {/* Recently Added Interviews  */}
+          Basic Interviews
           {/* <Button
             size="sm"
             variant="outline"

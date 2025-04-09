@@ -21,7 +21,7 @@ const GenerateAnswer = ({ conversation }) => {
                     navigator.clipboard.writeText(item.text);
                     const button = event.currentTarget;
                     const originalContent = button.innerHTML;
-                    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="text-green-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" className="text-green-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 6L9 17l-5-5"/>
                     </svg>`;
                     setTimeout(() => {

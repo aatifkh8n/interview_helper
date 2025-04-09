@@ -8,7 +8,7 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 
 import { generateChatResponse } from "@/utils/ChatGPTAIModal";
-import { MockInterview } from "@/utils/schema";
+import { MockInterview, LiveHelpInterview } from "@/utils/schema";
 import { db } from "@/utils/db";
 import { TechStack } from "@/utils/schema";
 import {
@@ -108,6 +108,7 @@ function AddNewInterview({ isOpen }) {
           jobDesc: mockResponse?.jobDesc || jobDescription,
           jobExperience: mockResponse?.yearsOfExperience || jobExperience,
           type: (selectedOption === "CV Based") ? 1 : 0,
+          fileText: fileText ? fileText : "",
           createdBy: user?.primaryEmailAddress?.emailAddress,
           createdAt: moment().format("DD-MM-YYYY HH:mm"),
         })
@@ -141,7 +142,6 @@ function AddNewInterview({ isOpen }) {
     setShowDropdown(false);
   };
 
-
   const handleLiveHelpSubmission = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -162,18 +162,18 @@ function AddNewInterview({ isOpen }) {
       const mockResponse = JSON.parse(cleanedResponse);
   
       const res = await db
-        .insert(MockInterview)
+        .insert(LiveHelpInterview)
         .values({
           mockId: uuidv4(),
-          jsonMockResp: {},
           jobPosition: mockResponse?.jobPosition || jobPosition,
           jobDesc: mockResponse?.jobDesc || jobDescription,
           jobExperience: mockResponse?.yearsOfExperience || jobExperience,
           type: 1,
+          fileText,
           createdBy: user?.primaryEmailAddress?.emailAddress,
           createdAt: moment().format("DD-MM-YYYY HH:mm"),
         })
-        .returning({ mockId: MockInterview.mockId });
+        .returning({ mockId: LiveHelpInterview.mockId });
   
       toast.success("We are ready to help you!");
       router.push(`dashboard/interview/${res[0]?.mockId}/live-help`);
@@ -201,22 +201,22 @@ function AddNewInterview({ isOpen }) {
             </DialogTitle>
           </DialogHeader>
           <DialogDescription>
-            <div class="w-full">
-              <div class="relative right-0">
+            <div className="w-full">
+              <div className="relative right-0">
                 <ul
-                  class="relative flex flex-wrap px-1.5 py-1.5 list-none rounded-md bg-slate-100"
+                  className="relative flex flex-wrap px-1.5 py-1.5 list-none rounded-md bg-slate-100"
                   data-tabs="tabs"
                   role="list"
                 >
                   <li
-                    class="z-30 flex-auto text-center"
+                    className="z-30 flex-auto text-center"
                     onClick={() => {
                       setIsLive(false);
                       setSelectedOption("Manual");
                     }}
                   >
                     <a
-                      class={`${
+                      className={`${
                         !isLive && "bg-white"
                       } z-30 flex items-center justify-center w-full px-0 py-2 text-sm mb-0 transition-all ease-in-out border-0 rounded-md cursor-pointer text-slate-600 bg-inherit`}
                       data-tab-target=""
@@ -227,14 +227,14 @@ function AddNewInterview({ isOpen }) {
                     </a>
                   </li>
                   <li
-                    class="z-30 flex-auto text-center"
+                    className="z-30 flex-auto text-center"
                     onClick={() => {
                       setIsLive(true);
                       setSelectedOption("Resume");
                     }}
                   >
                     <a
-                      class={`${
+                      className={`${
                         isLive && "bg-white"
                       } z-30 flex items-center justify-center w-full px-0 py-2 text-sm mb-0 transition-all ease-in-out border-0 rounded-md cursor-pointer text-slate-600 bg-inherit`}
                       data-tab-target=""
@@ -280,11 +280,11 @@ function AddNewInterview({ isOpen }) {
                         <button
                           id="dropdownDefaultButton"
                           data-dropdown-toggle="dropdown"
-                          class="text-black absolute top-2 end-5 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                          className="text-black absolute top-2 end-5 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                           type="button"
                         >
                           <svg
-                            class="w-2.5 h-2.5 ms-3"
+                            className="w-2.5 h-2.5 ms-3"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
