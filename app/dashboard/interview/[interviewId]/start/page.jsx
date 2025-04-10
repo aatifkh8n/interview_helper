@@ -30,6 +30,13 @@ const StartInterview = ({ params }) => {
         .select()
         .from(MockInterview)
         .where(eq(MockInterview.mockId, params.interviewId));
+
+      if (result.length === 0) {
+        setIsLoading(false);
+        router.push('/dashboard/');
+        toast.error("Interview cannot be started");
+        return;
+      }
       
       if (result[0].submitted) {
         setIsLoading(false);

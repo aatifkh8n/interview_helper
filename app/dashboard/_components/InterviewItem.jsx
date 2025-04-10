@@ -13,7 +13,7 @@ const InterviewItem = ({ interview, index }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const onStart = () => {
-    router.push(`/dashboard/interview/${interview?.mockId}`);
+    router.push(`/dashboard/interview/${interview?.mockId}/start`);
   };
 
   const onFeedbackPress = () => {

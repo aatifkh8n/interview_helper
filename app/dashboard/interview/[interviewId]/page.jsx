@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
+import { LiveHelpInterview, MockInterview } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import { Lightbulb, WebcamIcon } from "lucide-react";
 import Link from "next/link";
@@ -13,22 +13,36 @@ function Interview({ params }) {
   const [interviewData, setInterviewData] = useState(null);
   const [webCamEnabled, setWebCamEnabled] = useState(false);
 
+  const [isBasicInterivew, setIsBasicInterivew] = useState(true);
+
   useEffect(() => {
     GetInterviewDetails();
   }, []);
 
   const GetInterviewDetails = async () => {
     try {
-      const result = await db
+      let result = await db
         .select()
         .from(MockInterview)
         .where(eq(MockInterview.mockId, params.interviewId));
 
       if (result.length > 0) {
         setInterviewData(result[0]);
-      } else {
-        toast.error("Interview details not found");
+        return;
       }
+
+      console.log("isBasicInterivew", isBasicInterivew)
+      result = await db
+        .select()
+        .from(LiveHelpInterview)
+        .where(eq(LiveHelpInterview.mockId, params.interviewId));
+
+      if (result.length > 0) {
+        setInterviewData(result[0]);
+        return;
+      }
+
+      toast.error("Interview details not found");
     } catch (error) {
       toast.error("Error fetching interview details");
       console.error("Interview details fetch error:", error);
@@ -52,7 +66,9 @@ function Interview({ params }) {
   };
 
   let numberOfQuestions = 5;
-  numberOfQuestions = interviewData && JSON.parse(interviewData?.jsonMockResp).length;
+  if (isBasicInterivew) {
+    numberOfQuestions = interviewData && interviewData?.jsonMockResp && JSON.parse(interviewData?.jsonMockResp).length;
+  }
 
   if (!interviewData) {
     return <div>Loading interview details...</div>;
@@ -116,13 +132,17 @@ function Interview({ params }) {
         </div>
       </div>
       <div className="flex justify-end items-end">
-        {interviewData.submitted ? (
+        {isBasicInterivew ? (interviewData.submitted ? (
           <Link href={`/dashboard/interview/${params.interviewId}/feedback`}>
             <Button>Feedback</Button>
           </Link>
         ) : (
           <Link href={`/dashboard/interview/${params.interviewId}/start`}>
             <Button>Start Interview</Button>
+          </Link>
+        )) : (
+          <Link href={`/dashboard/interview/${params.interviewId}/live-help`}>
+            <Button>Get Live Help</Button>
           </Link>
         )}
       </div>
