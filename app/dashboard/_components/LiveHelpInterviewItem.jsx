@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { db } from "@/utils/db";
 import { eq } from "drizzle-orm";
-import { MockInterview } from "@/utils/schema";
-import { Trash2, Play, BotMessageSquare, FileUp, MessageSquareText } from "lucide-react";
+import { LiveHelpInterview } from "@/utils/schema";
+import { Trash2, BotMessageSquare, FileUp } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -16,15 +16,11 @@ const LiveHelpInterviewItem = ({ interview, index }) => {
     router.push(`/dashboard/interview/${interview?.mockId}`);
   };
 
-  const onFeedbackPress = () => {
-    router.push(`/dashboard/interview/${interview?.mockId}/feedback`);
-  };
-
   const onDelete = async () => {
     try {
       await db
-        .delete(MockInterview)
-        .where(eq(MockInterview.mockId, interview?.mockId));
+        .delete(LiveHelpInterview)
+        .where(eq(LiveHelpInterview.mockId, interview?.mockId));
 
       // Close dialog and show success toast
       setIsDialogOpen(false);
