@@ -22,7 +22,8 @@ const InterviewList = ({ type, heading }) => {
       ) /* .where(
       eq(MockInterview.type, type)
       ) */
-      .orderBy(desc(MockInterview.id));
+      .orderBy(desc(MockInterview.id))
+      .execute();
 
     setInterviewList(result);
 
@@ -34,14 +35,15 @@ const InterviewList = ({ type, heading }) => {
       ) /* .where(
       eq(LiveHelpInterview.type, type)
       ) */
-      .orderBy(desc(LiveHelpInterview.id));
+      .orderBy(desc(LiveHelpInterview.id))
+      .execute();
 
     setLiveHelpInterviewList(result);
   };
 
   useEffect(() => {
     user && GetInterviewList();
-  }, [user, interviewList]);
+  }, [user]);
 
   return (
     <>

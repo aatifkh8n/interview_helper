@@ -54,7 +54,8 @@ function Interview({ params }) {
       const result = await db
         .select()
         .from(LiveHelpInterview)
-        .where(eq(LiveHelpInterview.mockId, params.interviewId));
+        .where(eq(LiveHelpInterview.mockId, params.interviewId))
+        .execute();
 
       if (result.length === 0) {
         router.push("/dashboard");

@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import formidable from "formidable";
 import { Readable } from "stream";
-import { transcribeAudio } from '../../../utils/process-audio';
-
-
+import { transcribeAudio } from "../../../utils/process-audio";
 
 export async function POST(req) {
   try {
@@ -36,8 +34,6 @@ export async function POST(req) {
         resolve({ fields, files });
       });
     });
-
- 
 
     // Access the uploaded audio file by the "audio" key.
     const audioFile = files.audio;

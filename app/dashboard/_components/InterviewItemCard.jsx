@@ -24,7 +24,8 @@ const InterviewItemCard = ({ interview }) => {
     try {
       await db
         .delete(MockInterview)
-        .where(eq(MockInterview.mockId, interview?.mockId));
+        .where(eq(MockInterview.mockId, interview?.mockId))
+        .execute();
 
       // Close dialog and show success toast
       setIsDialogOpen(false);
@@ -39,9 +40,7 @@ const InterviewItemCard = ({ interview }) => {
   };
 
   return (
-    <div
-      className="relative border shadow-sm rounded-sm p-3 flex flex-col justify-end"
-    >
+    <div className="relative border shadow-sm rounded-sm p-3 flex flex-col justify-end">
       {/* Delete button in the top-right corner */}
       <Button
         size="sm"

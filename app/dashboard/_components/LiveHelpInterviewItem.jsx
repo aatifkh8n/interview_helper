@@ -8,7 +8,7 @@ import { Trash2, BotMessageSquare, FileUp } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
-const LiveHelpInterviewItem = ({ interview, index }) => {
+const LiveHelpInterviewItem = ({ interview, setInterviewList, index }) => {
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -20,7 +20,8 @@ const LiveHelpInterviewItem = ({ interview, index }) => {
     try {
       await db
         .delete(LiveHelpInterview)
-        .where(eq(LiveHelpInterview.mockId, interview?.mockId));
+        .where(eq(LiveHelpInterview.mockId, interview?.mockId))
+        .execute();
 
       // Close dialog and show success toast
       setIsDialogOpen(false);
@@ -49,7 +50,6 @@ const LiveHelpInterviewItem = ({ interview, index }) => {
       <td className="px-6 py-4">{interview?.jobExperience || "N/A"}</td>
       <td className="px-6 py-4">{interview?.createdAt}</td>
       <td className="px-6 py-4 text-center">
-
         <Button
           size="sm"
           variant="outline"

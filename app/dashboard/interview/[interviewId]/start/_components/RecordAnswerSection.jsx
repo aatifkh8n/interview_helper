@@ -16,7 +16,9 @@ const RecordAnswerSection = ({
   onAnswerSave,
 }) => {
   const [userAnswer, setUserAnswer] = useState("");
-  const [userAnswers, setUserAnswers] = useState(['' * mockInterviewQuestion.length]);
+  const [userAnswers, setUserAnswers] = useState([
+    "" * mockInterviewQuestion.length,
+  ]);
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -26,24 +28,24 @@ const RecordAnswerSection = ({
 
   useEffect(() => {
     // Speech recognition setup
-    if (typeof window !== "undefined" && 'webkitSpeechRecognition' in window) {
+    if (typeof window !== "undefined" && "webkitSpeechRecognition" in window) {
       recognitionRef.current = new window.webkitSpeechRecognition();
       const recognition = recognitionRef.current;
 
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      recognition.lang = "en-US";
 
       recognition.onresult = (event) => {
-        let finalTranscript = '';
+        let finalTranscript = "";
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript + ' ';
+            finalTranscript += event.results[i][0].transcript + " ";
           }
         }
 
         if (finalTranscript.trim()) {
-          setUserAnswer(prev => (prev + ' ' + finalTranscript).trim());
+          setUserAnswer((prev) => (prev + " " + finalTranscript).trim());
         }
       };
 
@@ -73,7 +75,7 @@ const RecordAnswerSection = ({
       toast.success("Webcam enabled successfully");
     } catch (error) {
       toast.error("Failed to enable webcam", {
-        description: "Please check your camera permissions"
+        description: "Please check your camera permissions",
       });
       console.error("Webcam error:", error);
     }
@@ -81,7 +83,7 @@ const RecordAnswerSection = ({
 
   const DisableWebcam = () => {
     const tracks = webcamRef.current?.srcObject?.getTracks();
-    tracks?.forEach(track => track.stop());
+    tracks?.forEach((track) => track.stop());
     setWebcamEnabled(false);
   };
 
@@ -101,7 +103,7 @@ const RecordAnswerSection = ({
     }
   };
 
-  const UpdateUserAnswer = async e => {
+  const UpdateUserAnswer = async (e) => {
     if (!userAnswer.trim()) {
       toast.error("Please provide an answer");
       return;
@@ -111,7 +113,7 @@ const RecordAnswerSection = ({
 
     try {
       //const feedbackPrompt = `Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}, User Answer: ${userAnswer}. Please give a rating out of 10 and feedback on improvement in JSON format { "rating": <number>, "feedback": <text> }`;
-      
+
       const feedbackPrompt = `Please analyze the following user's interview answer and return the response in JSON format with "rating" (number) and "feedback" (text):
       Question: "${mockInterviewQuestion[activeQuestionIndex]?.question}"
       User Answer: "${userAnswer}"
@@ -127,11 +129,13 @@ const RecordAnswerSection = ({
       //const JsonfeedbackResp = JSON.parse(cleanedResponse);
       let JsonfeedbackResp = null;
       try {
-        const cleanedResponse = responseText.replace(/```json|```/g, '').trim();
+        const cleanedResponse = responseText.replace(/```json|```/g, "").trim();
         JsonfeedbackResp = await JSON.parse(cleanedResponse);
       } catch (error) {
         console.error("JSON Parsing Error:", responseText);
-        toast.error("AI response was not in the correct format. Please try again.");
+        toast.error(
+          "AI response was not in the correct format. Please try again."
+        );
         return; // Prevent saving an invalid response
       }
 
@@ -149,10 +153,10 @@ const RecordAnswerSection = ({
       console.log("Saving Answer to DB:", answerRecord);
 
       try {
-        await db.insert(UserAnswer).values(answerRecord);
-        console.log("inserted successfully", answerRecord)
+        await db.insert(UserAnswer).values(answerRecord).execute();
+        console.log("inserted successfully", answerRecord);
       } catch (err) {
-        console.error("ERROR:", err)
+        console.error("ERROR:", err);
       }
 
       onAnswerSave(answerRecord);
@@ -170,7 +174,7 @@ const RecordAnswerSection = ({
       setIsRecording(false);
     } catch (error) {
       toast.error("Failed to save answer", {
-        description: error.message
+        description: error.message,
       });
       console.error("Answer save error:", error);
     } finally {
@@ -238,17 +242,21 @@ const RecordAnswerSection = ({
         className="w-full h-32 p-4 mt-4 border rounded-md text-gray-800"
         placeholder="Your answer will appear here..."
         value={userAnswers[activeQuestionIndex] || userAnswer}
-        onChange={e => setUserAnswer(e.target.value)}
+        onChange={(e) => setUserAnswer(e.target.value)}
       />
 
       <Button
         className="mt-4"
-        onClick={e => UpdateUserAnswer(e)}
-        disabled={userAnswers[activeQuestionIndex] || loading || !userAnswer.trim()}
+        onClick={(e) => UpdateUserAnswer(e)}
+        disabled={
+          userAnswers[activeQuestionIndex] || loading || !userAnswer.trim()
+        }
       >
         {loading ? (
-          <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
-        ) : (userAnswers[activeQuestionIndex]) ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+          </>
+        ) : userAnswers[activeQuestionIndex] ? (
           "Answer Recorded"
         ) : (
           "Save Answer"

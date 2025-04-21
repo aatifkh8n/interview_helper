@@ -1,92 +1,59 @@
-import React, { useRef, useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfToText from "react-pdftotext";
+import React, { useRef } from "react";
 
 import { cn } from "@/lib/utils";
 import { Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
-
-function sanitizeText(text) {
-  if (!text) return "";
-  let sanitized = text.replace(/\0/g, "");
-  sanitized = sanitized.replace(/[\uFFFD\uFFFE\uFFFF]/g, "");
-  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
-  return sanitized;
-}
-
-const DocumentUpload = ({ fileText, setFileText, className , MAX_FILE_SIZE_MB, children}) => {
-  const [file, setFile] = useState(null);
-  const inputRef = useRef(null); // Ref to clear the input field
-
-
+const DocumentUpload = ({
+  file,
+  setFile,
+  setFileText,
+  className,
+  MAX_FILE_SIZE_MB,
+  children,
+}) => {
+  const fileInputRef = useRef(null);
   // const MAX_FILE_SIZE_MB = 5;
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
 
-  if (!uploadedFile) return;
+    if (!uploadedFile) return;
 
-  const fileSizeMB = uploadedFile.size / (1024 * 1024); // Convert bytes to MB
-  if (fileSizeMB > MAX_FILE_SIZE_MB) {
-    toast.error(`File Size must be less than ${MAX_FILE_SIZE_MB} MB`)
-    event.target.value = null; // Clear the input
-    return;
-  }
-  if(uploadedFile.type  !== "application/pdf" && uploadedFile.type  !== "text/plain"){
-    toast.error(`This type of file not supported`)
-    event.target.value = null; // Clear the input
-    return;
-  }
+    const fileSizeMB = uploadedFile.size / (1024 * 1024); // Convert bytes to MB
+    if (fileSizeMB > MAX_FILE_SIZE_MB) {
+      toast.error(`File Size must be less than ${MAX_FILE_SIZE_MB} MB`);
+      event.target.value = null; // Clear the input
+      return;
+    }
+    if (
+      uploadedFile.type !== "application/pdf" &&
+      uploadedFile.type !== "text/plain"
+    ) {
+      toast.error(`This type of file not supported`);
+      event.target.value = null; // Clear the input
+      return;
+    }
 
-  setFile(uploadedFile);
-  processDocument(uploadedFile);
+    setFile(uploadedFile);
   };
 
   const handleFileRemove = () => {
+    console.log("file removed");
     setFile(null);
+    console.log(file);
     setFileText("");
-    if (inputRef.current) {
-      inputRef.current.value = null; // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
     }
-  };
-
-  const processDocument = async (uploadedFile) => {
-    const fileType = uploadedFile.type;
-
-    if (fileType === "application/pdf") {
-      await extractTextFromPDF(uploadedFile);
-    } else if (fileType === "text/plain") {
-      const text = await extractTextFromTextFile(uploadedFile);
-      setFileText(sanitizeText(text));
-    } else {
-      toast.error("Unsupported file type");
-      setFile(null)
-      return;
-    }
-  };
-
-  const extractTextFromPDF = async (file) => {
-    pdfToText(file)
-      .then((text) => setFileText(sanitizeText(text)))
-      .catch((err) => console.error("Failed to extract text from pdf", err));
-  };
-
-  const extractTextFromTextFile = (file) => {
-    const reader = new FileReader();
-    return new Promise((resolve, reject) => {
-      reader.onload = (e) => resolve(e.target.result);
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
   };
 
   return (
     <div className="relative">
       <input
-        ref={inputRef}
+        // ref={inputRef}
         type="file"
+        name="fileUpload"
+        ref={fileInputRef}
         className={cn(
           "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
           className

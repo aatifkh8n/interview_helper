@@ -7,9 +7,9 @@ import QuestionsSection from "./_components/QuestionsSection";
 import RecordAnswerSection from "./_components/RecordAnswerSection";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Link from 'next/link';
+import Link from "next/link";
 
 const StartInterview = ({ params }) => {
   const [interViewData, setInterviewData] = useState();
@@ -29,15 +29,16 @@ const StartInterview = ({ params }) => {
       const result = await db
         .select()
         .from(MockInterview)
-        .where(eq(MockInterview.mockId, params.interviewId));
+        .where(eq(MockInterview.mockId, params.interviewId))
+        .execute();
 
       if (result.length === 0) {
         setIsLoading(false);
-        router.push('/dashboard/');
+        router.push("/dashboard/");
         toast.error("Interview cannot be started");
         return;
       }
-      
+
       if (result[0].submitted) {
         setIsLoading(false);
         router.push(`/dashboard/interview/${params.interviewId}/feedback`);
@@ -60,7 +61,7 @@ const StartInterview = ({ params }) => {
     // Optional: Add any additional logic when an answer is saved
     // For example, you might want to automatically move to the next question
     if (activeQuestionIndex < mockInterviewQuestion.length - 1) {
-      setActiveQuestionIndex(prev => prev + 1);
+      setActiveQuestionIndex((prev) => prev + 1);
     }
   };
 
@@ -85,11 +86,12 @@ const StartInterview = ({ params }) => {
 
   const submitInterview = async () => {
     try {
-      console.log(interViewData)
+      console.log(interViewData);
       await db
         .update(MockInterview)
         .set({ submitted: true })
-        .where(eq(MockInterview.id, interViewData.id));
+        .where(eq(MockInterview.id, interViewData.id))
+        .execute();
 
       setIsLoading(false);
       router.push(`/dashboard/interveiw/${interviewId}/feedback`);
@@ -97,7 +99,7 @@ const StartInterview = ({ params }) => {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
     <div>
@@ -117,17 +119,23 @@ const StartInterview = ({ params }) => {
       </div>
       <div className="flex justify-end gap-6 my-6">
         {activeQuestionIndex > 0 && (
-          <Button onClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}>
+          <Button
+            onClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
+          >
             Previous Question
           </Button>
         )}
         {activeQuestionIndex != mockInterviewQuestion?.length - 1 && (
-          <Button onClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}>
+          <Button
+            onClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
+          >
             Next Question
           </Button>
         )}
         {activeQuestionIndex == mockInterviewQuestion?.length - 1 && (
-          <Link href={'/dashboard/interview/' + interViewData?.mockId + '/feedback'}>
+          <Link
+            href={"/dashboard/interview/" + interViewData?.mockId + "/feedback"}
+          >
             <Button onClick={submitInterview}>End Interview</Button>
           </Link>
         )}

@@ -24,18 +24,20 @@ function Interview({ params }) {
       let result = await db
         .select()
         .from(MockInterview)
-        .where(eq(MockInterview.mockId, params.interviewId));
+        .where(eq(MockInterview.mockId, params.interviewId))
+        .execute();
 
       if (result.length > 0) {
         setInterviewData(result[0]);
         return;
       }
 
-      console.log("isBasicInterivew", isBasicInterivew)
+      console.log("isBasicInterivew", isBasicInterivew);
       result = await db
         .select()
         .from(LiveHelpInterview)
-        .where(eq(LiveHelpInterview.mockId, params.interviewId));
+        .where(eq(LiveHelpInterview.mockId, params.interviewId))
+        .execute();
 
       if (result.length > 0) {
         setInterviewData(result[0]);
@@ -51,7 +53,8 @@ function Interview({ params }) {
 
   const handleWebcamToggle = () => {
     if (!webCamEnabled) {
-      navigator.mediaDevices.getUserMedia({ video: true })
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
         .then(() => {
           setWebCamEnabled(true);
           toast.success("Webcam and microphone enabled");
@@ -67,7 +70,10 @@ function Interview({ params }) {
 
   let numberOfQuestions = 5;
   if (isBasicInterivew) {
-    numberOfQuestions = interviewData && interviewData?.jsonMockResp && JSON.parse(interviewData?.jsonMockResp).length;
+    numberOfQuestions =
+      interviewData &&
+      interviewData?.jsonMockResp &&
+      JSON.parse(interviewData?.jsonMockResp).length;
   }
 
   if (!interviewData) {
@@ -98,11 +104,10 @@ function Interview({ params }) {
               <Lightbulb />
               <span>Information</span>
             </h2>
-            <h2 className="mt-3 text-yellow-500">{
-                `Enable Video Web Cam and Microphone to Start your AI Generated Mock Interview. 
+            <h2 className="mt-3 text-yellow-500">
+              {`Enable Video Web Cam and Microphone to Start your AI Generated Mock Interview. 
                 It has ${numberOfQuestions} questions which you can answer and will provide a report based on your answers. 
-                NOTE: We never record your video. Web cam access can be disabled at any time.`
-              }
+                NOTE: We never record your video. Web cam access can be disabled at any time.`}
             </h2>
           </div>
         </div>
@@ -132,15 +137,17 @@ function Interview({ params }) {
         </div>
       </div>
       <div className="flex justify-end items-end">
-        {isBasicInterivew ? (interviewData.submitted ? (
-          <Link href={`/dashboard/interview/${params.interviewId}/feedback`}>
-            <Button>Feedback</Button>
-          </Link>
+        {isBasicInterivew ? (
+          interviewData.submitted ? (
+            <Link href={`/dashboard/interview/${params.interviewId}/feedback`}>
+              <Button>Feedback</Button>
+            </Link>
+          ) : (
+            <Link href={`/dashboard/interview/${params.interviewId}/start`}>
+              <Button>Start Interview</Button>
+            </Link>
+          )
         ) : (
-          <Link href={`/dashboard/interview/${params.interviewId}/start`}>
-            <Button>Start Interview</Button>
-          </Link>
-        )) : (
           <Link href={`/dashboard/interview/${params.interviewId}/live-help`}>
             <Button>Get Live Help</Button>
           </Link>

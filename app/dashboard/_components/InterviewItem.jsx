@@ -4,7 +4,13 @@ import React, { useState } from "react";
 import { db } from "@/utils/db";
 import { eq } from "drizzle-orm";
 import { MockInterview } from "@/utils/schema";
-import { Trash2, Play, BotMessageSquare, FileUp, MessageSquareText } from "lucide-react";
+import {
+  Trash2,
+  Play,
+  BotMessageSquare,
+  FileUp,
+  MessageSquareText,
+} from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -24,7 +30,8 @@ const InterviewItem = ({ interview, index }) => {
     try {
       await db
         .delete(MockInterview)
-        .where(eq(MockInterview.mockId, interview?.mockId));
+        .where(eq(MockInterview.mockId, interview?.mockId))
+        .execute();
 
       // Close dialog and show success toast
       setIsDialogOpen(false);

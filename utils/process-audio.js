@@ -12,7 +12,7 @@ const MIN_CHUNK_SILENCE_DURATION = 0.1; // Minimum duration of silence within a 
 // Create an AudioContext (can be reused)
 // Ensure this runs only in the browser environment
 let audioContext;
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
 }
 
@@ -22,14 +22,14 @@ export const processChunks = async (chunks) => {
     console.log("No chunks to process");
     return;
   }
-  
+
   // Get the blob directly from the chunk if it's a single chunk, otherwise create a blob
   const blob = new Blob(chunks, { type: "audio/webm" });
   console.log("Created new blob from chunks");
 
   console.log("blob size:", blob.size, "bytes");
   console.log("blob type:", blob.type);
-  
+
   // Don't try to transcribe if the blob is too small (likely empty or corrupt)
   if (blob.size < 100) {
     console.log("Audio blob too small, skipping transcription");
@@ -42,11 +42,11 @@ export const processChunks = async (chunks) => {
 export async function transcribeAudio(blob) {
   try {
     // Directly use the blob's type rather than forcing a specific type
-    const fileName = `audio_${Date.now()}.${blob.type.split('/')[1]}`;
+    const fileName = `audio_${Date.now()}.${blob.type.split("/")[1]}`;
     const file = new File([blob], fileName, { type: blob.type });
-    
+
     console.log("file object:", file);
-    
+
     try {
       const response = await openai.audio.transcriptions.create({
         file: file,
@@ -54,14 +54,14 @@ export async function transcribeAudio(blob) {
         language: "en",
         response_format: "text",
       });
-      
+
       console.log("Transcription response:", response);
 
       if (!response) {
         console.log("No text found in transcription response");
         return null;
       }
-      
+
       return response;
     } catch (apiError) {
       console.error("OpenAI API Error:", apiError);
@@ -81,14 +81,21 @@ export async function transcribeAudio(blob) {
   }
 }
 
-export const generateResponse = async (text, extras={}) => {
+export const generateResponse = async (text, extras = {}) => {
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         {
           role: "system",
-          content: `You are an interviewee who applied for the job role: "${extras?.jobPosition}" with job description: "${extras?.jobDesc}" who must be answering the interviewer for only the complete and undersatandable questions (not empty quesitons) but answers should be short, consice and on the spot. also please try responding like an interviewee either know or not. ${(extras?.fileText && `Generate the answer from the following context only no extra information in the answers your answer shouldn't say like doc don't have that information and like that: ${extras?.fileText}`)} 
+          content: `You are an interviewee who applied for the job role: "${
+            extras?.jobPosition
+          }" with job description: "${
+            extras?.jobDesc
+          }" who must be answering the interviewer for only the complete and undersatandable questions (not empty quesitons) but answers should be short, consice and on the spot. also please try responding like an interviewee either know or not. ${
+            extras?.fileText &&
+            `Generate the answer from the following context only no extra information in the answers your answer shouldn't say like doc don't have that information and like that: ${extras?.fileText}`
+          } 
           
           
           answer should only be given to the complete and related questions (empty and irrelated questions and question containing only single word (you) should be marked irrelevant) and be in a json form as below: 
@@ -96,17 +103,17 @@ export const generateResponse = async (text, extras={}) => {
             "answer": "answer to the question",
             "related": tell is question is related or not by say true or false,
             "percentMatch": how much the question is related to the document out of 100 like 68
-          }`
+          }`,
         },
         {
-          role: "user", 
-          content: text
-        }
+          role: "user",
+          content: text,
+        },
       ],
     });
-    
+
     const response = await JSON.parse(completion?.choices[0]?.message?.content);
-    
+
     if (!response) {
       console.error("No response from GPT-4");
       return null;
@@ -130,11 +137,13 @@ export const generateResponse = async (text, extras={}) => {
   } catch (error) {
     console.error("Error getting GPT-4 response:", error);
   }
-}
+};
 
 export const detectSilence = async (blob, minSilenceDurationSeconds) => {
   if (!audioContext) {
-    console.error("AudioContext not supported or not in a browser environment.");
+    console.error(
+      "AudioContext not supported or not in a browser environment."
+    );
     return false; // Cannot detect silence without AudioContext
   }
   if (blob.size < 300) {
@@ -149,30 +158,42 @@ export const detectSilence = async (blob, minSilenceDurationSeconds) => {
     try {
       audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
     } catch (decodeError) {
-       console.error("Error decoding audio data:", decodeError);
-       // Try common sample rates if decode fails (sometimes needed for webm/opus)
-       const commonSampleRates = [48000, 44100, 24000, 16000];
-       let decoded = false;
-       for (const rate of commonSampleRates) {
-         try {
-           const ctx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, arrayBuffer.byteLength / 2, rate); // Approximate length/rate
-           audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-           console.log(`Successfully decoded with sample rate: ${rate}`);
-           decoded = true;
-           break;
-         } catch (e) { /* ignore */ }
-       }
-       if (!decoded) {
-          console.error("Failed to decode audio data even with common sample rates.");
-          return false; // Can't proceed if decoding fails
-       }
+      console.error("Error decoding audio data:", decodeError);
+      // Try common sample rates if decode fails (sometimes needed for webm/opus)
+      const commonSampleRates = [48000, 44100, 24000, 16000];
+      let decoded = false;
+      for (const rate of commonSampleRates) {
+        try {
+          const ctx = new (window.OfflineAudioContext ||
+            window.webkitOfflineAudioContext)(
+            1,
+            arrayBuffer.byteLength / 2,
+            rate
+          ); // Approximate length/rate
+          audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+          console.log(`Successfully decoded with sample rate: ${rate}`);
+          decoded = true;
+          break;
+        } catch (e) {
+          /* ignore */
+        }
+      }
+      if (!decoded) {
+        console.error(
+          "Failed to decode audio data even with common sample rates."
+        );
+        return false; // Can't proceed if decoding fails
+      }
     }
-
 
     const channelData = audioBuffer.getChannelData(0); // Use the first channel
     const sampleRate = audioBuffer.sampleRate;
-    const requiredSilentSamples = Math.floor(minSilenceDurationSeconds * sampleRate);
-    const analysisChunkSize = Math.floor(MIN_CHUNK_SILENCE_DURATION * sampleRate); // Analyze in smaller chunks
+    const requiredSilentSamples = Math.floor(
+      minSilenceDurationSeconds * sampleRate
+    );
+    const analysisChunkSize = Math.floor(
+      MIN_CHUNK_SILENCE_DURATION * sampleRate
+    ); // Analyze in smaller chunks
 
     let consecutiveSilentSamples = 0;
 
@@ -198,12 +219,16 @@ export const detectSilence = async (blob, minSilenceDurationSeconds) => {
 
       // Check if we've met the required duration
       if (consecutiveSilentSamples >= requiredSilentSamples) {
-        console.log(`Detected silence of at least ${minSilenceDurationSeconds} seconds.`);
+        console.log(
+          `Detected silence of at least ${minSilenceDurationSeconds} seconds.`
+        );
         return true; // Found sufficient silence
       }
     }
 
-    console.log(`No silence duration of ${minSilenceDurationSeconds} seconds detected. Max consecutive samples: ${consecutiveSilentSamples}/${requiredSilentSamples}`);
+    console.log(
+      `No silence duration of ${minSilenceDurationSeconds} seconds detected. Max consecutive samples: ${consecutiveSilentSamples}/${requiredSilentSamples}`
+    );
     return false; // Did not find sufficient silence
   } catch (error) {
     console.error("Error during silence detection:", error);

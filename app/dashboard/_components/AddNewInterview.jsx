@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
-import { LoaderCircle, Sparkles } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
+import OpenAI from "openai";
 
 import { generateChatResponse } from "@/utils/ChatGPTAIModal";
 import { MockInterview, LiveHelpInterview } from "@/utils/schema";
@@ -24,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { DocumentUpload } from "@/components/ui/file";
 import Dropdown from "@/components/ui/Dropdown";
 import Asterisk from "@/components/ui/asterisk";
+import { processDocument } from "../../../utils/helper";
 
 let JOB_ROLE_SUGGESTIONS = [];
 
@@ -38,12 +40,18 @@ function AddNewInterview({ isOpen }) {
   const [isLive, setIsLive] = useState(false);
   const { user } = useUser();
   const [selectedOption, setSelectedOption] = useState("Manual");
+  const [file, setFile] = useState(null);
 
   let maxFileSize = selectedOption === "Research Document" ? 25 : 5;
 
   let techStacks = {};
 
   const router = useRouter();
+
+  const openai = new OpenAI({
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true,
+  });
 
   useEffect(() => {
     getTechStacks();
@@ -70,6 +78,11 @@ function AddNewInterview({ isOpen }) {
     e.preventDefault();
     setLoading(true);
 
+    if (file) {
+      let res = await processDocument(file);
+      setFileText(res);
+    }
+
     let inputPrompt;
 
     if (selectedOption === "CV Based") {
@@ -94,7 +107,7 @@ function AddNewInterview({ isOpen }) {
         .replace(/```json\n?|```/g, "")
         .trim();
       const mockResponse = JSON.parse(cleanedResponse);
-      
+
       const questionsArray = mockResponse
         ? Object.values(mockResponse?.interviewData)
         : [];
@@ -107,7 +120,7 @@ function AddNewInterview({ isOpen }) {
           jobPosition: mockResponse?.jobPosition || jobPosition,
           jobDesc: mockResponse?.jobDesc || jobDescription,
           jobExperience: mockResponse?.yearsOfExperience || jobExperience,
-          type: (selectedOption === "CV Based") ? 1 : 0,
+          type: selectedOption === "CV Based" ? 1 : 0,
           fileText: fileText ? fileText : "",
           createdBy: user?.primaryEmailAddress?.emailAddress,
           createdAt: moment().format("DD-MM-YYYY HH:mm"),
@@ -145,36 +158,121 @@ function AddNewInterview({ isOpen }) {
   const handleLiveHelpSubmission = async (e) => {
     e.preventDefault();
     setLoading(true);
-    let inputPrompt;
-  
-    if (selectedOption === "Resume") {
-      inputPrompt = `Resume Content: ${fileText}. Generate below based on the resume content. Example output format: {"jobPosition": "like Software Engineer", "jobDesc": "like Python, Scikit-learn, tensorflow", "yearsOfExperience": 4}`;
-    } else {
-      inputPrompt = `Research paper Content: ${fileText}. Generate below based on the research paper content. Example output format: {"jobPosition": "like Software Engineer", "jobDesc": "like Python, Scikit-learn, tensorflow", "yearsOfExperience": 4}`;
+
+    if (file) {
+      let res = await processDocument(file);
+      setFileText(res);
     }
-  
+
+    // console.log(fileText);
+
+    // setLoading(false);
+    // return;
+
+    let inputPrompt;
+
     try {
-      const responseText = await generateChatResponse(inputPrompt);
-      const cleanedResponse = responseText
-        .replace(/```json\n?|```/g, "")
-        .trim();
-  
-      const mockResponse = JSON.parse(cleanedResponse);
-  
+      const formData = new FormData();
+      formData.append("file", e.target.elements.fileUpload?.files?.[0]);
+
+      const response = await fetch("/api/process-file", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      console.log(result);
+    } catch (e) {
+    } finally {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+    return;
+    const fileSlicedText =
+      fileText.length > 500 ? fileText.slice(0, 500) : fileText;
+
+    console.log(fileText.length);
+    console.log(fileText.split(" ").length);
+
+    if (selectedOption === "Resume") {
+      inputPrompt = `Resume Content: ${fileSlicedText}. Generate below based on the resume content. Example output format: {"jobPosition": "like Software Engineer", "jobDesc": "like Python, Scikit-learn, tensorflow", "yearsOfExperience": 4}`;
+    } else {
+      inputPrompt = `Research paper Content: ${fileSlicedText}. Generate below based on the research paper content. Example output format: {"jobPosition": "like Software Engineer", "jobDesc": "like Python, Scikit-learn, tensorflow", "yearsOfExperience": 4}`;
+    }
+
+    // const res = await fetch("http://127.0.0.1:800/process-file");
+    // const jsonRes = await JSON.parse(res);
+    // console.log("jsonRes:", jsonRes);
+
+    try {
+      function fileIntoChunks(arr, chunkSize) {
+        const noEmptyStrsArr = arr.filter((item) => item.length > 0);
+
+        const res = [];
+        for (let i = 0; i < noEmptyStrsArr.length; i += chunkSize) {
+          const chunk = noEmptyStrsArr.slice(i, i + chunkSize);
+          res.push(
+            chunk +
+              "\nplease note it, save it and wait for my next input for the complete text content"
+          );
+        }
+        return res;
+      }
+
+      const fileWords = fileText.split(" ");
+      console.log(fileWords.length);
+      return;
+
+      const prompts = fileIntoChunks(fileWords, 8000);
+      //   Error getting response from gpt: BadRequestError: 400 This model's maximum context length is 8192 tokens. However, your messages resulted in 34162 tokens. Please reduce the length of the messages.
+      // at async handleLiveHelpSubmission (AddNewInterview.jsx:219:24)
+
+      prompts[
+        prompts.length - 1
+      ] += `\n\nGenerate below based on the research paper content. Example output format: {"jobPosition": "like Software Engineer", "jobDesc": "like Python, Scikit-learn, tensorflow", "yearsOfExperience": 4}`;
+
+      console.log("prompts.length:", prompts.length);
+      let completion, response;
+      try {
+        for (let prompt of prompts) {
+          completion = await openai.chat.completions.create({
+            model: "gpt-4",
+            messages: [
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+          });
+          console.log("completion:", completion);
+        }
+
+        response = await JSON.parse(completion?.choices[0]?.message?.content);
+        console.log("response:", response);
+      } catch (err) {
+        toast.error("Error getting response from gpt");
+        console.log("Error getting response from gpt:", err);
+      }
+
+      console.log(response);
+      return;
+
       const res = await db
         .insert(LiveHelpInterview)
         .values({
           mockId: uuidv4(),
-          jobPosition: mockResponse?.jobPosition || jobPosition,
-          jobDesc: mockResponse?.jobDesc || jobDescription,
-          jobExperience: mockResponse?.yearsOfExperience || jobExperience,
+          jobPosition: response?.jobPosition || jobPosition,
+          jobDesc: response?.jobDesc || jobDescription,
+          jobExperience: response?.yearsOfExperience || jobExperience,
           type: 1,
           fileText,
           createdBy: user?.primaryEmailAddress?.emailAddress,
           createdAt: moment().format("DD-MM-YYYY HH:mm"),
         })
         .returning({ mockId: LiveHelpInterview.mockId });
-  
+
       toast.success("We are ready to help you!");
       router.push(`dashboard/interview/${res[0]?.mockId}/live-help`);
     } catch (error) {
@@ -184,7 +282,7 @@ function AddNewInterview({ isOpen }) {
       setLoading(false);
     }
   };
-  
+
   return (
     <div>
       <div
@@ -301,7 +399,9 @@ function AddNewInterview({ isOpen }) {
                         </button>
 
                         {showDropdown && (
-                          <ul className={`absolute z-10 max-h-44 overflow-y-auto bg-white border rounded-md w-full mt-1 shadow`}>
+                          <ul
+                            className={`absolute z-10 max-h-44 overflow-y-auto bg-white border rounded-md w-full mt-1 shadow`}
+                          >
                             {filteredOptions.map((option) => (
                               <li
                                 key={option}
@@ -352,7 +452,8 @@ function AddNewInterview({ isOpen }) {
                       <Asterisk />
                     </label>
                     <DocumentUpload
-                      fileText={fileText}
+                      file={file}
+                      setFile={setFile}
                       setFileText={setFileText}
                       MAX_FILE_SIZE_MB={5}
                     />
@@ -411,7 +512,8 @@ function AddNewInterview({ isOpen }) {
                     <Asterisk />
                   </label>
                   <DocumentUpload
-                    fileText={fileText}
+                    file={file}
+                    setFile={setFile}
                     setFileText={setFileText}
                     MAX_FILE_SIZE_MB={maxFileSize}
                   />
@@ -422,11 +524,7 @@ function AddNewInterview({ isOpen }) {
                     Number of Questions
                     <Asterisk />
                   </label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="70"
-                  />
+                  <Input type="number" min="0" max="70" />
                 </div>
 
                 <div className="flex gap-5 justify-end mt-4">
