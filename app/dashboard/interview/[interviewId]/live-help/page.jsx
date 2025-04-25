@@ -9,7 +9,11 @@ import TabScreenShare from "@/app/dashboard/_components/TabScreenShare";
 import TranscribeText from "@/app/dashboard/_components/TranscribeText";
 import GenerateAnswer from "@/app/dashboard/_components/GenerateAnswer";
 import { db } from "@/utils/db";
+<<<<<<< HEAD
 import { LiveInterview } from "@/utils/schema";
+=======
+import { LiveHelpInterview } from "@/utils/schema";
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { XCircle } from "lucide-react";
 
@@ -53,8 +57,13 @@ function Interview({ params }) {
     try {
       const result = await db
         .select()
+<<<<<<< HEAD
         .from(LiveInterview)
         .where(eq(LiveInterview.mockId, params.interviewId));
+=======
+        .from(LiveHelpInterview)
+        .where(eq(LiveHelpInterview.mockId, params.interviewId));
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 
       if (result.length === 0) {
         router.push("/dashboard");

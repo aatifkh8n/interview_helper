@@ -7,9 +7,15 @@ import QuestionsSection from "./_components/QuestionsSection";
 import RecordAnswerSection from "./_components/RecordAnswerSection";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+<<<<<<< HEAD
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
+=======
+import { useRouter } from 'next/navigation';
+import { toast } from "sonner";
+import Link from 'next/link';
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 
 const StartInterview = ({ params }) => {
   const [interViewData, setInterviewData] = useState();
@@ -20,10 +26,17 @@ const StartInterview = ({ params }) => {
   const router = useRouter();
 
   useEffect(() => {
+<<<<<<< HEAD
     getInterviewDetails();
   }, []);
 
   const getInterviewDetails = async () => {
+=======
+    GetInterviewDetails();
+  }, []);
+
+  const GetInterviewDetails = async () => {
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
     try {
       setIsLoading(true);
       const result = await db
@@ -33,11 +46,19 @@ const StartInterview = ({ params }) => {
 
       if (result.length === 0) {
         setIsLoading(false);
+<<<<<<< HEAD
         router.push("/dashboard/");
         toast.error("Interview cannot be started");
         return;
       }
 
+=======
+        router.push('/dashboard/');
+        toast.error("Interview cannot be started");
+        return;
+      }
+      
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
       if (result[0].submitted) {
         setIsLoading(false);
         router.push(`/dashboard/interview/${params.interviewId}/feedback`);
@@ -60,7 +81,11 @@ const StartInterview = ({ params }) => {
     // Optional: Add any additional logic when an answer is saved
     // For example, you might want to automatically move to the next question
     if (activeQuestionIndex < mockInterviewQuestion.length - 1) {
+<<<<<<< HEAD
       setActiveQuestionIndex((prev) => prev + 1);
+=======
+      setActiveQuestionIndex(prev => prev + 1);
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
     }
   };
 
@@ -85,7 +110,11 @@ const StartInterview = ({ params }) => {
 
   const submitInterview = async () => {
     try {
+<<<<<<< HEAD
       console.log(interViewData);
+=======
+      console.log(interViewData)
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
       await db
         .update(MockInterview)
         .set({ submitted: true })
@@ -97,7 +126,11 @@ const StartInterview = ({ params }) => {
     } catch (err) {
       console.log(err);
     }
+<<<<<<< HEAD
   };
+=======
+  }
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 
   return (
     <div>
@@ -117,23 +150,35 @@ const StartInterview = ({ params }) => {
       </div>
       <div className="flex justify-end gap-6 my-6">
         {activeQuestionIndex > 0 && (
+<<<<<<< HEAD
           <Button
             onClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}
           >
+=======
+          <Button onClick={() => setActiveQuestionIndex(activeQuestionIndex - 1)}>
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             Previous Question
           </Button>
         )}
         {activeQuestionIndex != mockInterviewQuestion?.length - 1 && (
+<<<<<<< HEAD
           <Button
             onClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}
           >
+=======
+          <Button onClick={() => setActiveQuestionIndex(activeQuestionIndex + 1)}>
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             Next Question
           </Button>
         )}
         {activeQuestionIndex == mockInterviewQuestion?.length - 1 && (
+<<<<<<< HEAD
           <Link
             href={"/dashboard/interview/" + interViewData?.mockId + "/feedback"}
           >
+=======
+          <Link href={'/dashboard/interview/' + interViewData?.mockId + '/feedback'}>
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             <Button onClick={submitInterview}>End Interview</Button>
           </Link>
         )}
@@ -142,4 +187,8 @@ const StartInterview = ({ params }) => {
   );
 };
 
+<<<<<<< HEAD
 export default StartInterview;
+=======
+export default StartInterview;
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd

@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 "use client";
 
 import { useState } from "react";
+=======
+'use client'
+
+import { useState } from 'react'
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 
 export default function HeroSection() {
   return (
@@ -10,7 +16,11 @@ export default function HeroSection() {
           <div
             style={{
               clipPath:
+<<<<<<< HEAD
                 "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+=======
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             }}
             className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
           />
@@ -19,11 +29,16 @@ export default function HeroSection() {
         <div className="mx-auto max-w-4xl py-16 sm:py-24 lg:py-20">
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
             <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+<<<<<<< HEAD
               How to use this AI interview mocker .{" "}
               <a
                 href="/how-it-works"
                 className="font-semibold text-primaryColor"
               >
+=======
+       How to use this AI interview mocker .{' '}
+              <a href="/how-it-works" className="font-semibold text-indigo-600">
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
                 <span aria-hidden="true" className="absolute inset-0" />
                 Read more <span aria-hidden="true">&rarr;</span>
               </a>
@@ -35,12 +50,17 @@ export default function HeroSection() {
               Your Personal AI Interview Coach
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600 sm:text-xl">
+<<<<<<< HEAD
               Double your chances of landing that job offer with our AI-powered
               interview prep
+=======
+              Double your chances of landing that job offer with our AI-powered interview prep
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
                 href="/dashboard"
+<<<<<<< HEAD
                 className="rounded-md bg-primaryColor px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
               >
                 Get started
@@ -48,6 +68,15 @@ export default function HeroSection() {
               <a
                 href="/dashboard"
                 className="text-sm font-semibold leading-6 text-gray-900 hover:text-primaryColor"
+=======
+                className="rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Get started
+              </a>
+              <a 
+                href="/dashboard" 
+                className="text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600"
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
               >
                 Learn more <span aria-hidden="true">→</span>
               </a>
@@ -61,12 +90,22 @@ export default function HeroSection() {
         >
           <div
             style={{
+<<<<<<< HEAD
               clipPath: "polygon(24% 0%, 100% 0%, 76% 100%, 0% 100%)",
+=======
+              clipPath:
+                'polygon(24% 0%, 100% 0%, 76% 100%, 0% 100%)',
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             }}
             className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#9089fc] to-[#ff80b5] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
           />
         </div>
       </div>
     </div>
+<<<<<<< HEAD
   );
 }
+=======
+  )
+}
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd

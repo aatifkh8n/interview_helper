@@ -3,6 +3,10 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { db } from "@/utils/db";
 import { eq } from "drizzle-orm";
+<<<<<<< HEAD
+=======
+import { LiveHelpInterview } from "@/utils/schema";
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 import { Trash2, BotMessageSquare, FileUp } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -17,6 +21,13 @@ const LiveHelpInterviewItem = ({ interview, index }) => {
 
   const onDelete = async () => {
     try {
+<<<<<<< HEAD
+=======
+      await db
+        .delete(LiveHelpInterview)
+        .where(eq(LiveHelpInterview.mockId, interview?.mockId));
+
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
       // Close dialog and show success toast
       setIsDialogOpen(false);
       toast.success("Interview deleted successfully");
@@ -41,14 +52,25 @@ const LiveHelpInterviewItem = ({ interview, index }) => {
           {interview?.jobPosition}
         </Link>
       </th>
+<<<<<<< HEAD
       <td className="px-6 py-4">{interview?.experience || "N/A"}</td>
       <td className="px-6 py-4">{interview?.createdAt}</td>
       <td className="px-6 py-4 text-center">
+=======
+      <td className="px-6 py-4">{interview?.jobExperience || "N/A"}</td>
+      <td className="px-6 py-4">{interview?.createdAt}</td>
+      <td className="px-6 py-4 text-center">
+
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
         <Button
           size="sm"
           variant="outline"
           title="Live Help"
+<<<<<<< HEAD
           className="mr-2 text-primaryColor"
+=======
+          className="mr-2 text-indigo-600"
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
         >
           <Link href={`/dashboard/interview/${interview?.mockId}/live-help`}>
             <BotMessageSquare />

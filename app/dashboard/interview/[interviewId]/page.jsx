@@ -1,7 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { db } from "@/utils/db";
+<<<<<<< HEAD
 import { LiveInterview, MockInterview } from "@/utils/schema";
+=======
+import { LiveHelpInterview, MockInterview } from "@/utils/schema";
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 import { eq } from "drizzle-orm";
 import { Lightbulb, WebcamIcon } from "lucide-react";
 import Link from "next/link";
@@ -16,10 +20,17 @@ function Interview({ params }) {
   const [isBasicInterivew, setIsBasicInterivew] = useState(true);
 
   useEffect(() => {
+<<<<<<< HEAD
     getInterviewDetails();
   }, []);
 
   const getInterviewDetails = async () => {
+=======
+    GetInterviewDetails();
+  }, []);
+
+  const GetInterviewDetails = async () => {
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
     try {
       let result = await db
         .select()
@@ -31,10 +42,18 @@ function Interview({ params }) {
         return;
       }
 
+<<<<<<< HEAD
       result = await db
         .select()
         .from(LiveInterview)
         .where(eq(LiveInterview.mockId, params.interviewId));
+=======
+      console.log("isBasicInterivew", isBasicInterivew)
+      result = await db
+        .select()
+        .from(LiveHelpInterview)
+        .where(eq(LiveHelpInterview.mockId, params.interviewId));
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 
       if (result.length > 0) {
         setInterviewData(result[0]);
@@ -50,8 +69,12 @@ function Interview({ params }) {
 
   const handleWebcamToggle = () => {
     if (!webCamEnabled) {
+<<<<<<< HEAD
       navigator.mediaDevices
         .getUserMedia({ video: true })
+=======
+      navigator.mediaDevices.getUserMedia({ video: true })
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
         .then(() => {
           setWebCamEnabled(true);
           toast.success("Webcam and microphone enabled");
@@ -67,10 +90,14 @@ function Interview({ params }) {
 
   let numberOfQuestions = 5;
   if (isBasicInterivew) {
+<<<<<<< HEAD
     numberOfQuestions =
       interviewData &&
       interviewData?.jsonMockResp &&
       JSON.parse(interviewData?.jsonMockResp).length;
+=======
+    numberOfQuestions = interviewData && interviewData?.jsonMockResp && JSON.parse(interviewData?.jsonMockResp).length;
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
   }
 
   if (!interviewData) {
@@ -93,7 +120,11 @@ function Interview({ params }) {
             </h2>
             <h2 className="text-lg">
               <strong>Years of Experience: </strong>
+<<<<<<< HEAD
               {interviewData.experience}
+=======
+              {interviewData.jobExperience}
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             </h2>
           </div>
           <div className="p-5 border rounded-lg border-yellow-300 bg-yellow-100">
@@ -101,10 +132,18 @@ function Interview({ params }) {
               <Lightbulb />
               <span>Information</span>
             </h2>
+<<<<<<< HEAD
             <h2 className="mt-3 text-yellow-500">
               {`Enable Video Web Cam and Microphone to Start your AI Generated Mock Interview. 
                 It has ${numberOfQuestions} questions which you can answer and will provide a report based on your answers. 
                 NOTE: We never record your video. Web cam access can be disabled at any time.`}
+=======
+            <h2 className="mt-3 text-yellow-500">{
+                `Enable Video Web Cam and Microphone to Start your AI Generated Mock Interview. 
+                It has ${numberOfQuestions} questions which you can answer and will provide a report based on your answers. 
+                NOTE: We never record your video. Web cam access can be disabled at any time.`
+              }
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
             </h2>
           </div>
         </div>
@@ -134,6 +173,7 @@ function Interview({ params }) {
         </div>
       </div>
       <div className="flex justify-end items-end">
+<<<<<<< HEAD
         {isBasicInterivew ? (
           interviewData.submitted ? (
             <Link href={`/dashboard/interview/${params.interviewId}/feedback`}>
@@ -145,6 +185,17 @@ function Interview({ params }) {
             </Link>
           )
         ) : (
+=======
+        {isBasicInterivew ? (interviewData.submitted ? (
+          <Link href={`/dashboard/interview/${params.interviewId}/feedback`}>
+            <Button>Feedback</Button>
+          </Link>
+        ) : (
+          <Link href={`/dashboard/interview/${params.interviewId}/start`}>
+            <Button>Start Interview</Button>
+          </Link>
+        )) : (
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
           <Link href={`/dashboard/interview/${params.interviewId}/live-help`}>
             <Button>Get Live Help</Button>
           </Link>
@@ -154,4 +205,8 @@ function Interview({ params }) {
   );
 }
 
+<<<<<<< HEAD
 export default Interview;
+=======
+export default Interview;
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd

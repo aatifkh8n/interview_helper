@@ -8,7 +8,11 @@ import {
 } from "@/utils/process-audio";
 
 const TabScreenShare = React.memo(
+<<<<<<< HEAD
   ({ setIsPlaying, setConversation, interview }) => {
+=======
+  ({ setIsPlaying, setConversation, mockInterview }) => {
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
     const [stream, setStream] = useState(null);
     const [error, setError] = useState(null);
 
@@ -61,9 +65,15 @@ const TabScreenShare = React.memo(
         console.log("Transcribed text: ", text);
 
         const response = await generateResponse(text, {
+<<<<<<< HEAD
           fileText: interview?.jobInterview?.fileText,
           jobPosition: interview?.jobInterview?.position,
           jobDesc: interview?.jobInterview?.description,
+=======
+          fileText: mockInterview?.fileText,
+          jobPosition: mockInterview?.jobPosition,
+          jobDesc: mockInterview?.jobDesc,
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
         });
         if (!response) {
           console.error("Failed to generate response.");

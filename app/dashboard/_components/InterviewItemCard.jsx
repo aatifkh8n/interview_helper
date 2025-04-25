@@ -39,7 +39,13 @@ const InterviewItemCard = ({ interview }) => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="relative border shadow-sm rounded-sm p-3 flex flex-col justify-end">
+=======
+    <div
+      className="relative border shadow-sm rounded-sm p-3 flex flex-col justify-end"
+    >
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
       {/* Delete button in the top-right corner */}
       <Button
         size="sm"
@@ -62,7 +68,11 @@ const InterviewItemCard = ({ interview }) => {
         </h2>
         {/* <h2 className="text-sm text-gray-500">Question(s): {JSON.parse(interview?.jsonMockResp).length}</h2> */}
         <h2 className="text-sm text-gray-500">
+<<<<<<< HEAD
           Experience: {interview?.experience} Year(s)
+=======
+          Experience: {interview?.jobExperience} Year(s)
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
         </h2>
         <h2 className="text-sm text-gray-500">
           Created At: {interview?.createdAt}

@@ -13,7 +13,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { chatSession } from "@/utils/GeminiAIModal";
 import { LoaderCircle, Sparkles } from "lucide-react";
 import { MockInterview } from "@/utils/schema";
+<<<<<<< HEAD
 import { v4 as uuidv4 } from "uuid";
+=======
+import { v4 as uuidv4 } from 'uuid';
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 import { db } from "@/utils/db";
 import { useUser } from "@clerk/nextjs";
 import moment from "moment";
@@ -22,6 +26,7 @@ import { toast } from "sonner";
 
 // Job Role Suggestions
 const JOB_ROLE_SUGGESTIONS = [
+<<<<<<< HEAD
   "Full Stack Developer",
   "Frontend Developer",
   "Backend Developer",
@@ -32,10 +37,23 @@ const JOB_ROLE_SUGGESTIONS = [
   "Cloud Engineer",
   "Mobile App Developer",
   "UI/UX Designer",
+=======
+  'Full Stack Developer',
+  'Frontend Developer',
+  'Backend Developer',
+  'Software Engineer',
+  'DevOps Engineer',
+  'Data Scientist',
+  'Machine Learning Engineer',
+  'Cloud Engineer',
+  'Mobile App Developer',
+  'UI/UX Designer'
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 ];
 
 // Tech Stack Suggestions
 const TECH_STACK_SUGGESTIONS = {
+<<<<<<< HEAD
   "Full Stack Developer": "React, Node.js, Express, MongoDB, TypeScript",
   "Frontend Developer": "React, Vue.js, Angular, TypeScript, Tailwind CSS",
   "Backend Developer": "Python, Django, Flask, Java Spring, PostgreSQL",
@@ -46,6 +64,18 @@ const TECH_STACK_SUGGESTIONS = {
   "Cloud Engineer": "AWS, Azure, GCP, Terraform, Kubernetes",
   "Mobile App Developer": "React Native, Flutter, Swift, Kotlin",
   "UI/UX Designer": "Figma, Sketch, Adobe XD, InVision",
+=======
+  'Full Stack Developer': 'React, Node.js, Express, MongoDB, TypeScript',
+  'Frontend Developer': 'React, Vue.js, Angular, TypeScript, Tailwind CSS',
+  'Backend Developer': 'Python, Django, Flask, Java Spring, PostgreSQL',
+  'Software Engineer': 'Java, C++, Python, AWS, Microservices',
+  'DevOps Engineer': 'Docker, Kubernetes, Jenkins, AWS, Azure',
+  'Data Scientist': 'Python, TensorFlow, PyTorch, Pandas, NumPy',
+  'Machine Learning Engineer': 'Python, scikit-learn, Keras, TensorFlow',
+  'Cloud Engineer': 'AWS, Azure, GCP, Terraform, Kubernetes',
+  'Mobile App Developer': 'React Native, Flutter, Swift, Kotlin',
+  'UI/UX Designer': 'Figma, Sketch, Adobe XD, InVision'
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 };
 
 function AddNewInterview() {
@@ -69,6 +99,7 @@ function AddNewInterview() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+<<<<<<< HEAD
 
     const inputPrompt = `Job position: ${jobPosition}, Job Description: ${jobDescription}, Years of Experience: ${jobExperience}.
     Generate 5 interview questions and answers in JSON format.`;
@@ -85,6 +116,21 @@ function AddNewInterview() {
 
       const res = await db
         .insert(MockInterview)
+=======
+  
+    const inputPrompt = `Job position: ${jobPosition}, Job Description: ${jobDescription}, Years of Experience: ${jobExperience}.
+    Generate 5 interview questions and answers in JSON format.`;
+  
+    try {
+      const result = await chatSession.sendMessage(inputPrompt);
+      const responseText = await result.response.text();
+      
+      const cleanedResponse = responseText.replace(/```json\n?|```/g, '').trim();
+      
+      const mockResponse = JSON.parse(cleanedResponse);
+      
+      const res = await db.insert(MockInterview)
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
         .values({
           mockId: uuidv4(),
           jsonMockResp: JSON.stringify(mockResponse),
@@ -92,6 +138,7 @@ function AddNewInterview() {
           jobDesc: jobDescription,
           jobExperience: jobExperience,
           createdBy: user?.primaryEmailAddress?.emailAddress,
+<<<<<<< HEAD
           createdAt: moment().format("DD-MM-YYYY"),
         })
         .returning({ mockId: MockInterview.mockId });
@@ -101,6 +148,16 @@ function AddNewInterview() {
     } catch (error) {
       console.error("Error generating interview:", error);
       toast.error("Failed to generate interview questions.");
+=======
+          createdAt: moment().format('DD-MM-YYYY'),
+        }).returning({ mockId: MockInterview.mockId });
+      
+      toast.success('Interview questions generated successfully!');
+      router.push(`dashboard/interview/${res[0]?.mockId}`);
+    } catch (error) {
+      console.error("Error generating interview:", error);
+      toast.error('Failed to generate interview questions.');
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
     } finally {
       setLoading(false);
     }
@@ -135,6 +192,7 @@ function AddNewInterview() {
                       list="jobRoles"
                     />
                     <datalist id="jobRoles">
+<<<<<<< HEAD
                       {JOB_ROLE_SUGGESTIONS.map((role) => (
                         <option key={role} value={role} />
                       ))}
@@ -143,6 +201,16 @@ function AddNewInterview() {
                       type="button"
                       variant="ghost"
                       size="icon"
+=======
+                      {JOB_ROLE_SUGGESTIONS.map(role => (
+                        <option key={role} value={role} />
+                      ))}
+                    </datalist>
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="icon" 
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
                       onClick={() => autoSuggestTechStack(jobPosition)}
                       disabled={!jobPosition}
                     >
@@ -173,11 +241,15 @@ function AddNewInterview() {
                 </div>
               </div>
               <div className="flex gap-5 justify-end">
+<<<<<<< HEAD
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={() => setOpenDialog(false)}
                 >
+=======
+                <Button type="button" variant="ghost" onClick={() => setOpenDialog(false)}>
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
                   Cancel
                 </Button>
                 <Button type="submit" disabled={loading}>
@@ -186,7 +258,11 @@ function AddNewInterview() {
                       <LoaderCircle className="animate-spin mr-2" /> Generating
                     </>
                   ) : (
+<<<<<<< HEAD
                     "Start Interview"
+=======
+                    'Start Interview'
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
                   )}
                 </Button>
               </div>
@@ -198,4 +274,8 @@ function AddNewInterview() {
   );
 }
 
+<<<<<<< HEAD
 export default AddNewInterview;
+=======
+export default AddNewInterview;
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd

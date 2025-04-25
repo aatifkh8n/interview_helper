@@ -8,7 +8,11 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 
 import { generateChatResponse } from "@/utils/ChatGPTAIModal";
+<<<<<<< HEAD
 import { MockInterview } from "@/utils/schema";
+=======
+import { MockInterview, LiveHelpInterview } from "@/utils/schema";
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
 import { db } from "@/utils/db";
 import { TechStack } from "@/utils/schema";
 import {
@@ -94,7 +98,11 @@ function AddNewInterview({ isOpen }) {
         .replace(/```json\n?|```/g, "")
         .trim();
       const mockResponse = JSON.parse(cleanedResponse);
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
       const questionsArray = mockResponse
         ? Object.values(mockResponse?.interviewData)
         : [];
@@ -107,7 +115,11 @@ function AddNewInterview({ isOpen }) {
           jobPosition: mockResponse?.jobPosition || jobPosition,
           jobDesc: mockResponse?.jobDesc || jobDescription,
           jobExperience: mockResponse?.yearsOfExperience || jobExperience,
+<<<<<<< HEAD
           type: selectedOption === "CV Based" ? 1 : 0,
+=======
+          type: (selectedOption === "CV Based") ? 1 : 0,
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
           fileText: fileText ? fileText : "",
           createdBy: user?.primaryEmailAddress?.emailAddress,
           createdAt: moment().format("DD-MM-YYYY HH:mm"),
@@ -146,18 +158,27 @@ function AddNewInterview({ isOpen }) {
     e.preventDefault();
     setLoading(true);
     let inputPrompt;
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
     if (selectedOption === "Resume") {
       inputPrompt = `Resume Content: ${fileText}. Generate below based on the resume content. Example output format: {"jobPosition": "like Software Engineer", "jobDesc": "like Python, Scikit-learn, tensorflow", "yearsOfExperience": 4}`;
     } else {
       inputPrompt = `Research paper Content: ${fileText}. Generate below based on the research paper content. Example output format: {"jobPosition": "like Software Engineer", "jobDesc": "like Python, Scikit-learn, tensorflow", "yearsOfExperience": 4}`;
     }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
     try {
       const responseText = await generateChatResponse(inputPrompt);
       const cleanedResponse = responseText
         .replace(/```json\n?|```/g, "")
         .trim();
+<<<<<<< HEAD
 
       const mockResponse = JSON.parse(cleanedResponse);
 
@@ -175,6 +196,25 @@ function AddNewInterview({ isOpen }) {
       //   })
       //   .returning({ mockId: LiveHelpInterview.mockId });
 
+=======
+  
+      const mockResponse = JSON.parse(cleanedResponse);
+  
+      const res = await db
+        .insert(LiveHelpInterview)
+        .values({
+          mockId: uuidv4(),
+          jobPosition: mockResponse?.jobPosition || jobPosition,
+          jobDesc: mockResponse?.jobDesc || jobDescription,
+          jobExperience: mockResponse?.yearsOfExperience || jobExperience,
+          type: 1,
+          fileText,
+          createdBy: user?.primaryEmailAddress?.emailAddress,
+          createdAt: moment().format("DD-MM-YYYY HH:mm"),
+        })
+        .returning({ mockId: LiveHelpInterview.mockId });
+  
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
       toast.success("We are ready to help you!");
       router.push(`dashboard/interview/${res[0]?.mockId}/live-help`);
     } catch (error) {
@@ -184,11 +224,19 @@ function AddNewInterview({ isOpen }) {
       setLoading(false);
     }
   };
+<<<<<<< HEAD
 
   return (
     <div>
       <div
         className="p-10 border rounded-lg bg-secondary hover:scale-102 hover:shadow-md cursor-pointer transition-all"
+=======
+  
+  return (
+    <div>
+      <div
+        className="p-10 border rounded-lg bg-secondary hover:scale-105 hover:shadow-md cursor-pointer transition-all"
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
         onClick={() => setOpenDialog(true)}
       >
         <h1 className="font-bold text-lg text-center">+ Add New</h1>
@@ -301,9 +349,13 @@ function AddNewInterview({ isOpen }) {
                         </button>
 
                         {showDropdown && (
+<<<<<<< HEAD
                           <ul
                             className={`absolute z-10 max-h-44 overflow-y-auto bg-white border rounded-md w-full mt-1 shadow`}
                           >
+=======
+                          <ul className={`absolute z-10 max-h-44 overflow-y-auto bg-white border rounded-md w-full mt-1 shadow`}>
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
                             {filteredOptions.map((option) => (
                               <li
                                 key={option}
@@ -368,8 +420,13 @@ function AddNewInterview({ isOpen }) {
                   </label>
                   <Input
                     type="number"
+<<<<<<< HEAD
                     min="1"
                     max="50"
+=======
+                    min="0"
+                    max="70"
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
                     value={questions}
                     placeholder="Enter number of questions"
                     onChange={(e) => setQuestions(e.target.value)}
@@ -424,7 +481,15 @@ function AddNewInterview({ isOpen }) {
                     Number of Questions
                     <Asterisk />
                   </label>
+<<<<<<< HEAD
                   <Input type="number" min="1" max="50" />
+=======
+                  <Input
+                    type="number"
+                    min="0"
+                    max="70"
+                  />
+>>>>>>> 472314dfa9823bd34ef56789713ef3b6c45cd9bd
                 </div>
 
                 <div className="flex gap-5 justify-end mt-4">
